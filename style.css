@@ -1,0 +1,71 @@
+
+
+
+
+#etape1
+{
+    padding-right: 20px;
+    padding-left: 32px;
+    background-color: #C0C0C0;
+    margin-right: 90px;
+    margin-left: 240px;
+    width: 362px;
+}
+button
+{
+    color: #fff;
+}
+#mail
+{
+    width: 250px;
+}
+#mtp
+{
+    width: 250px;   
+}
+
+#button
+{
+  margin-left: 28px;
+  width: 290px;
+  height: 30px;
+}
+
+#general
+{
+    display: flex;
+    padding-top: 100px;  
+}
+
+#button
+{
+    background-color: blue;
+}
+
+#etape2
+{
+    float: right;
+    background-color: #C0C0C0;
+    padding-left: 20px;
+    padding-right: 20px;
+
+
+}
+.inscription
+{
+    float: right;
+    background-color: blue;
+    color: #fff;
+    margin-bottom: 30px;
+}
+
+.hr {
+    
+    border-top: 1px solid blue;
+    width: 25%; 
+    margin-left: 120px;
+}
+#phone
+{
+    width: 340px;
+}
