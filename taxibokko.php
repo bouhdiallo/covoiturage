@@ -1,98 +1,159 @@
 <?php
-$servername = 'localhost';
-$username = 'root';
-$password = '';
-$database = 'taxibokko';
+//require('ListeClients.php');
 
-//on etablie la connexion
-$conn = new PDO ("mysql:host=$servername;dbname=$database", $username,$password);
+// Classe pour gérer l'inscription
+class Inscription {
+//propriete pour inscription
+private $nom;
+private $prenom;
+private $phone;
+private $mail;
+private $mtp;
 
-//on verifie si les champs sont definis
-if(isset($_POST['sinscrire'])){
-    $nom = $_POST['nom'];
-    $prenom =  $_POST['prenom'];
-    $telephone =  $_POST['telephone'];
-    $email =  $_POST['email'];
-    $mot_de_pass =  $_POST['mot_de_pass'];
+//constructeur
+public function __construct($monNom,$monPrenom,$numeroPhone,$email,$monMtp) {
+    
+        $this->nom = $monNom;
+        $this->prenom = $monPrenom;
+        $this->phone = $numeroPhone;
+        $this->mail = $email;
+        $this->mtp = $monMtp;
+    }
 
-$sql = ("INSERT INTO `inscription`(`nom`, `prenom`, `telephone`, `email`, `mot_de_pass`) VALUES (:nom,:prenom,:telephone,:email,:mot_de_pass)");
-// on prepare la requete sql
- $a = $conn ->prepare($sql);
-//on lie les espaces reservés a l'aide des marqeurs avec des valeuurs 
- $a-> bindParam(':nom',$nom);
- $a-> bindParam(':prenom',$prenom);
- $a-> bindParam(':telephone',$telephone);
- $a-> bindParam(':email',$email);
- $a-> bindParam(':mot_de_pass',$mot_de_pass);
- //on execute la requete
- $a->execute();
-};
+    public function getNom(){
+        return $this->nom;
+    }
+    
+    public function setNom($nouveauNom){
+        if (is_string($nouveauNom)) {
+            $this->nom = $nouveauNom;
+        }else {
+            throw new exception("le nom doit etre une chaine de caractere");
+        }
+    }
+    
+    public function getPrenom(){
+        return $this->prenom;
+    }
+    
+    public function setPrenom($nouveauPrenom){
+        if (is_string($nouveauPrenom)) {
+            $this->prenom = $nouveauPrenom;
+        }else {
+            throw new exception("le prenom doit etre une chaine de caractere");
+        }
+    }
 
-//on verifie si les champs sont definis
-if(isset($_POST['connexion'])){
-    $mail = $_POST['email'];
-    $mot_de_pass =  $_POST['mot_de_pass'];
+    public function getPhone(){
+        return $this->phone;
+    }
+    
+    public function setPhone($nouveauPhone){
+        if (is_numeric($nouveauPhone)) {
+            $this->phone = $nouveauPhone;
+        }else {
+            throw new exception("le numero doit etre numerique");
+        }
+    }
 
-   $sql2 = ("SELECT  `email`, `mot_de_pass` FROM `inscription` WHERE email = :email AND mot_de_pass = :mot_de_pass");
-// on prepare la requete sql
-   $b = $conn->prepare($sql2);
-//on lie les espaces reservés a l'aide des marqeurs avec des valeuurs 
-   $b->bindParam(':email',$mail);
-   $b->bindParam(':mot_de_pass',$mot_de_pass);
-    //on execute la requete
-   $b->execute();
+    public function getMail(){
+        return $this->mail;
+    }
+    
+    public function setMail($nouveauMail){
+        if (is_string($nouveauMail)) {
+            $this->nom = $nouveauMail;
+        }else {
+            throw new exception("l'email doit etre une chaine de caractere");
+        }
+    }
 
-   //on recupere les resultats 
-   $resultat=$b->fetch(PDO::FETCH_ASSOC); 
-  
-   if($resultat) {
-    echo "ce compte existe";
-    header('location:acceuil.php');
-   } else {
-    echo "ce compte n'existe pas";
-   }
-}
-?>
+    public function getMtp(){
+        return $this->mtp;
+    }
+    
+    public function setMtp($nouveauMtp){
+        if (is_string($nouveauMtp)) {
+            $this->mtp = $nouveauMtp;
+        }else {
+            throw new exception("le mtp doit etre une chaine de caractere");
+        }
+    }
+    
+    // Méthode pour soumettre le formulaire d'inscription
+    public function inscriptionUsers() {
+        if (isset($_POST['sinscrire'])) {
+            $prenom = $_POST['prenom'];
+            $nom = $_POST['nom'];
+            $telephone = $_POST['telephone'];
+            $email = $_POST['email'];
+            $mot_de_pass = $_POST['mot_de_pass'];
+            $retaper = $_POST['retaper'];
+            
+            // vérifier que les champs ne sont pas vides et que les mots de passe correspondent
+            if (!empty($prenom) && !empty($nom) && !empty($telephone) && !empty($email) && !empty($mot_de_pass) && $mot_de_pass == $retaper) {
+                // Connexion a la base de données.
+                $bdd = new PDO('mysql:host=localhost;dbname=taxibokko', 'root', '');
+                // Inséreons les données dans la table "connexion". 
+                // [$prenom, $nom, $telephone, $email, $mot_de_pass] est un tableau contenant les valeurs à insérer dans la requête préparée. 
+                //Ces valeurs remplacent les ? dans la requête préparée.  
+                $stmt = $bdd->prepare("INSERT INTO inscription (prenom, nom, telephone, email, mot_de_pass) VALUES (?, ?, ?, ?, ?)");
+                $stmt->execute([$prenom, $nom, $telephone, $email, $mot_de_pass]);
+                
+                echo "l'inscription a reussi";
+            } else {
+                echo "veuillez remplir tous les champs et verifier si les mots de pass sont bien identiques";
 
-<?php
+            }
+        }
+    }
+        }
+      //création instance de la classe Inscription
+        $inscription = new Inscription("","","","","");
+        $inscription->inscriptionUsers();
+
+
 
 /*
-// Vérifier que tous les champs sont remplis
-if (empty($nom) || empty($prenom) || empty($telephone) || empty($email) || empty($mot_de_pass)) {
-    echo "Tous les champs doivent être remplis.";
-} else {
-    // Vérifier que le nom et le prénom contiennent que des lettres et ne dépassent pas 10 caractères
-    if (ctype_alpha($nom) && ctype_alpha($prenom) && strlen($nom) <= 10 && strlen($prenom) <= 10) {
-        // Vérifier que le numéro de téléphone ne dépasse pas 9 chiffres et commence par "7"
-        if (is_numeric($telephone) && strlen($telephone) <= 9 && substr($telephone, 0, 1) == "7"){ 
+    // Classe pour gérer la connexion
+          class Connexion {
+            //propriete
+           public $email;
+           public $motpass;
 
-        } 
-
-// Vérifiez que les noms et prénoms ne contiennent que du texte
-if (ctype_alpha($nom) && ctype_alpha($prenom)) {
-    echo "<br>" ;
-}else{ 
-    echo "Les noms et prénoms ne doivent contenir que des lettres.";
-}
-    // Vérifiez que les noms et prénoms ne dépassent pas 10 caractères
-    if (strlen($nom) > 10 && strlen($prenom) > 10) {
-        echo "Les noms et prénoms ne doivent pas dépasser 10 caractères chacun.";
+           public function __construct($monEmail,$monMotpass) {
+        $this->email =$monEmail ;
+        $this->motpass =$monMotpass ;
     }
-        //verifer que le numero est numerique
- if(is_numeric($telephone) && substr($telephone, 0, 1) == "7"){ 
-    echo "le numero de telephone est valide";
- } else {
-    echo "le numero de telephone doit etre numerique et doit imperativement commencer par un '7'";
- }
+    // Méthode pour soumettre le formulaire de connexion
+    public function connexionUsers() {
+        if(isset($_POST['connexion'])){
+            $adressMail = $_POST['email'];
+            $motdepass = $_POST['mot_de_pass'];
+            // on verifie si le champs adressemail et motdepas ne sont pas vides
+             if(!empty($adressMail) && !empty($motdepass)){
+                 // Connexion à la base de données
+                 $bdd = new PDO('mysql:host=localhost;dbname=taxibokko', 'root', '');
 
-} 
-if(empty($nom)|| empty($prenom)|| empty($telephone)|| empty($email)|| empty($mot_de_pass)){
-    echo "tous les champs sont obliagtoires";
-} else{ 
+                 $stmt1 = $bdd->prepare("SELECT * FROM inscription");
+                  $stmt1->execute();
+                 // Redirigez l'utilisateur vers la page listeClients.php
+                  header('location:listeClients.php'); 
+              } else {  
+                echo "veuillez remplir tous les champs";
+                } 
+            }
+        }
+    }
 
-}*/
-
+       //création d'une instance de la classe Connexion
+         $connexion = new Connexion("","");
+      // Appelez la méthode pour afficher la liste des connectes
+         $connexion->connexionUsers();
+*/
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
