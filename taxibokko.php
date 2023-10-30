@@ -114,7 +114,7 @@ public function __construct($monNom,$monPrenom,$numeroPhone,$email,$monMtp) {
 
 
 
-/*
+
     // Classe pour gérer la connexion
           class Connexion {
             //propriete
@@ -150,7 +150,7 @@ public function __construct($monNom,$monPrenom,$numeroPhone,$email,$monMtp) {
          $connexion = new Connexion("","");
       // Appelez la méthode pour afficher la liste des connectes
          $connexion->connexionUsers();
-*/
+
 ?>
 
 
